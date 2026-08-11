@@ -1,7 +1,7 @@
 /**
- * 腾讯云 COS 部署脚本
- * 将 dist/ 目录上传到腾讯云对象存储，作为 GitHub Pages 的备用访问
- * 使用: npm run deploy-cos
+ * 腾讯云开发（CloudBase）静态托管部署脚本
+ * 将 dist/ 目录上传到云开发静态托管，作为客户访问的正式网址
+ * 使用: npm run deploy-tcb
  */
 
 import { readFileSync, readdirSync, statSync } from 'fs'
@@ -27,12 +27,12 @@ function loadEnv() {
 const env = loadEnv()
 const SECRET_ID = env.COS_SECRET_ID
 const SECRET_KEY = env.COS_SECRET_KEY
-const BUCKET = env.COS_BUCKET
-const REGION = env.COS_REGION
-const WEBSITE_URL = env.COS_WEBSITE_URL
+const BUCKET = env.TCB_BUCKET
+const REGION = env.TCB_REGION
+const WEBSITE_URL = env.TCB_URL
 
 if (!SECRET_ID || !SECRET_KEY || !BUCKET || !REGION) {
-  console.error('❌ .env 配置不完整，请检查 COS_SECRET_ID / COS_SECRET_KEY / COS_BUCKET / COS_REGION')
+  console.error('❌ .env 配置不完整，请检查 COS_SECRET_ID / COS_SECRET_KEY / TCB_BUCKET / TCB_REGION')
   process.exit(1)
 }
 
@@ -54,11 +54,11 @@ function getAllFiles(dir) {
 
 async function main() {
   console.log('='.repeat(50))
-  console.log('☁️  腾讯云 COS 部署')
+  console.log('☁️  腾讯云开发（CloudBase）静态托管部署')
   console.log('='.repeat(50))
 
-  // 1. 清空存储桶旧文件（保持与本地一致）
-  console.log('\n🗑️  清空存储桶旧文件...')
+  // 1. 清空托管桶旧文件（保持与本地一致）
+  console.log('\n🗑️  清空托管旧文件...')
   await new Promise((resolve, reject) => {
     cos.getBucket({ Bucket: BUCKET, Region: REGION }, (err, data) => {
       if (err) return reject(err)
@@ -84,8 +84,6 @@ async function main() {
         Region: REGION,
         Key: key,
         Body: readFileSync(file),
-        // 关键：腾讯云2024年后默认对文件附加"强制下载"指令，
-        // 用 Headers 显式设置 Content-Disposition: inline，让浏览器正常显示而不是下载
         Headers: {
           'Content-Disposition': 'inline',
         },
@@ -99,7 +97,7 @@ async function main() {
   }
 
   console.log(`\n✅ 全部上传完成！（${uploaded} 个文件）`)
-  console.log(`🌐 客户备用访问网址: ${WEBSITE_URL}`)
+  console.log(`🌐 客户访问网址: ${WEBSITE_URL}`)
 }
 
 main().catch(err => {
