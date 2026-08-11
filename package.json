@@ -10,9 +10,12 @@
     "preview": "vite preview",
     "import-data": "node scripts/import-excel.js",
     "generate-template": "node scripts/generate-template.js",
-    "sync": "npm run import-data && git add -A && git commit -m '更新数据' && git push"
+    "sync": "npm run import-data && git add -A && git commit -m '更新数据' && git push",
+    "deploy-cos": "npm run build && node scripts/deploy-cos.js",
+    "sync-all": "npm run import-data && git add -A && git commit -m '更新数据' && git push && npm run deploy-cos"
   },
   "dependencies": {
+    "cos-nodejs-sdk-v5": "^3.0.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
