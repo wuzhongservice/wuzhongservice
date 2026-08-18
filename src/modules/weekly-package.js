@@ -98,7 +98,7 @@ function renderPackageContent(app) {
                 color: #333;
                 border-bottom: 1px solid #ddd;
               ">
-                ${group.startsWith('组') ? '江苏中烟 · ' : ''}${escapeHtml(group)}
+                ${group.startsWith('组') ? escapeHtml(items[0].品牌) + ' · ' : ''}${escapeHtml(group)}
               </div>
               <div style="padding: 8px 14px 12px;">
                 ${items.map(p => {
